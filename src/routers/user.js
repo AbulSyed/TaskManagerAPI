@@ -33,7 +33,7 @@ router.post('/users/logout', auth, async (req, res) => {
     await req.user.save()
     res.status(200).send()
   }catch(e){
-    res.status(500).send()
+    res.status(400).send()
   }
 })
 
@@ -43,7 +43,7 @@ router.post('/users/logoutAll', auth, async (req, res) => {
     await req.user.save()
     res.status(200).send()
   }catch(e){
-    res.status(500).send()
+    res.status(400).send()
   }
 })
 
