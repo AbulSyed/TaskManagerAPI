@@ -20,8 +20,9 @@ router.get('/tasks', auth, async (req, res) => {
   if(req.query.completed){
     match.completed = req.query.completed === 'true'
   }
+
   try {
-    const tasks = await Task.find({ owner: req.user._id, ...match })
+    const tasks = await Task.find({ owner: req.user._id, ...match }, null, { limit: parseInt(req.query.limit), skip: parseInt(req.query.skip) })
     res.status(200).send(tasks)
   }catch(e){
     res.status(500).send()
@@ -38,7 +39,11 @@ router.get('/tasks', auth, async (req, res) => {
 //   try {
 //     await req.user.populate({
 //       path: 'tasks',
-//       match
+//       match,
+//       options: {
+//         limit: parseInt(req.query.limit),
+//         skip: parseInt(req.query.skip)
+//       }
 //     }).execPopulate()
 //     res.status(200).send(req.user.tasks)
 //   }catch(e){
