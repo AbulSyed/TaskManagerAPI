@@ -96,8 +96,7 @@ const upload = multer({
 })
 
 router.post('/users/me/avatar', auth, upload.single('avatar'), async (req, res) => {
-  const buffer = await sharp(req.file.buffer).resize({ width: 250,
-  height: 250 }).png().toBuffer()
+  const buffer = await sharp(req.file.buffer).resize({ width: 250, height: 250 }).png().toBuffer()
   req.user.avatar = buffer
   await req.user.save()
   res.status(200).send()
@@ -124,7 +123,7 @@ router.get('/users/:id/avatar', async (req, res) => {
     }
 
     res.set('Content-Type', 'image/png')
-    res.send(user.avatar)
+    res.status(200).send(user.avatar)
   }catch(e){
     res.status(404).send()
   }
