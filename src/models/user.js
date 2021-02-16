@@ -6,7 +6,7 @@ const Task = require('./task')
 
 // Create Schema and pass it in the mongoose model - need Schema to use middleware
 
-// Create User model with name (required & trim), email (required, unique, trim, lowercase & validate), password (required, trim, minlength, doesnt contain password), avatar - buffer, tokens - array of objects
+// Create User model with name (required & trim), email (required, unique, trim, lowercase & validate), password (required, trim, minlength), avatar - buffer, tokens - array of objects
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -30,12 +30,7 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
     trim: true,
-    minlength: 7,
-    validate(value){
-      if(value.toLowerCase().includes('password')){
-        throw new Error('Password cant contain "password"')
-      }
-    }
+    minlength: 7
   },
   avatar: {
     type: Buffer
