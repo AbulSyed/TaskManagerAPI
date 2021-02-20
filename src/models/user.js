@@ -45,13 +45,19 @@ const userSchema = new mongoose.Schema({
   timestamps: true
 })
 
-userSchema.methods.toJSON = function(){
-  const user = this.toObject()
-  delete user.password
-  delete user.tokens
-  delete user.avatar
-  return user
-}
+userSchema.pre('save', async function(next){
+  if(this.isModified('password')){
+    this.password = await bcrypt.hash(this.password, 8)
+  }
+
+  next()
+})
+
+userSchema.pre('remove', async function(next){
+  await Task.deleteMany({ owner: this._id })
+
+  next()
+})
 
 userSchema.methods.generateAuthToken = async function(){
   const token = jwt.sign({ _id: this._id.toString() }, process.env.JWT_SECRET)
@@ -72,19 +78,13 @@ userSchema.statics.findByCredentials = async (email, password) => {
   return user
 }
 
-userSchema.pre('save', async function(next){
-  if(this.isModified('password')){
-    this.password = await bcrypt.hash(this.password, 8)
-  }
-
-  next()
-})
-
-userSchema.pre('remove', async function(next){
-  await Task.deleteMany({ owner: this._id })
-
-  next()
-})
+userSchema.methods.toJSON = function(){
+  const user = this.toObject()
+  delete user.password
+  delete user.tokens
+  delete user.avatar
+  return user
+}
 
 const User = mongoose.model('User', userSchema)
 
